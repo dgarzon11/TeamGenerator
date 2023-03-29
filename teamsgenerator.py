@@ -49,7 +49,7 @@ selected_values = st.multiselect("Players", options, options, label_visibility="
 
 # Show number of players selected
 st.write("Number of players selected:", len(selected_values))
-
+st.markdown("Test")
 # Show table of players selected 
 #if len(pdfiltered)>0:
 #    st.subheader('Payers Selected')
@@ -57,7 +57,7 @@ st.write("Number of players selected:", len(selected_values))
 
 # Add a submit button generate teams
 if st.button("Generate Teams"):
-
+    
     st.markdown("""---""")
     # --------------- GENERATE TEAMS -------------------------
 
@@ -235,6 +235,7 @@ if st.button("Generate Teams"):
 
         # Show the chart in Streamlit
         st.altair_chart(chart, use_container_width=True)
+        
 
 
 
