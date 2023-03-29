@@ -49,8 +49,7 @@ selected_values = st.multiselect("Players", options, options, label_visibility="
 
 # Show number of players selected
 st.write("Number of players selected:", len(selected_values))
-st.markdown("Test")
-st.markdown("Test")
+
 # Show table of players selected 
 #if len(pdfiltered)>0:
 #    st.subheader('Payers Selected')
