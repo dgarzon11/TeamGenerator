@@ -3,6 +3,7 @@ import streamlit as st
 import numpy as np
 import random
 from deap import base, creator, tools
+import altair as alt
 
 # Titles
 st.set_page_config(
@@ -16,9 +17,12 @@ st.title("Teams Generator App")
 
 # Use sidebar to add instructions and improve layout
 with st.sidebar:
-    st.markdown("## Instructions")
+    st.markdown("# About")
     st.markdown("Welcome to the teams generator app")
     st.markdown("Created for \"Los lunes al futsal\"")
+    st.write("The genetic algorithm is a search heuristic that is inspired by Charles Darwin's theory of natural selection. It is commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection.")
+    st.write("The algorithm works by creating a population of candidate solutions, then evaluating their fitness. The fitter solutions are more likely to be selected for reproduction. The reproduction process creates offspring by combining the genetic material of multiple parent solutions. The offspring are then mutated to introduce new genetic material into the population. The process is repeated until a satisfactory solution is found.")    
+        
 
 # Read in data from the Google Sheet.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
@@ -29,21 +33,22 @@ def load_data(sheets_url):
 
 df = load_data(st.secrets["public_gsheets_url"])
 
-with st.expander("See explanation", True):
-    # Print results.
-    #for row in df.itertuples():
-    #   st.write(f"{row.name} has a :{row.pet}:")
-    if st.checkbox('Show players data'):
-        st.subheader('List of players')
-        st.write(df)
+# Print results.
+#for row in df.itertuples():
+#   st.write(f"{row.name} has a :{row.pet}:")
+if st.checkbox('Show players data'):
+    st.subheader('List of players')
+    st.write(df)
 
-    # Get the values from the first column of the DataFrame
-    options = df.iloc[:, 0].unique()
+# Get the values from the first column of the DataFrame
+options = df.iloc[:, 0].unique()
 
-    # Create a multiselect widget and get the selected values, default is all players
-    st.subheader('Select today\'s players')
-    selected_values = st.multiselect("Players", options, options, label_visibility="collapsed")
+# Create a multiselect widget and get the selected values, default is all players
+st.subheader('Select today\'s players')
+selected_values = st.multiselect("Players", options, options, label_visibility="collapsed")
 
+# Show number of players selected
+st.write("Number of players selected:", len(selected_values))
 
 # Show table of players selected 
 #if len(pdfiltered)>0:
@@ -52,7 +57,8 @@ with st.expander("See explanation", True):
 
 # Add a submit button generate teams
 if st.button("Generate Teams"):
-
+    
+    st.markdown("""---""")
     # --------------- GENERATE TEAMS -------------------------
 
     # Generate two equal teams based on the total points. 
@@ -180,51 +186,59 @@ if st.button("Generate Teams"):
         team2_total_points=sum(team2['TotalPoints'])
 
 
+
         col1, col2 = st.columns(2)
 
         with col1:
             st.markdown(f"<h3 style='color: white; background-color: #007bff; padding: 10px;'>Blue Team</h3>", unsafe_allow_html=True)
+            st.write(len(team1)," players")
             st.metric(label="Team Points", value=team1_total_points, delta=team1_total_points-team2_total_points)
             for name in team1.iloc[:, 0]:
-                st.markdown(f"<img src='https://img.icons8.com/emoji/24/000000/man-playing-handball--v1.png'/> {name}", unsafe_allow_html=True)
+                st.markdown(f"<img src='https://img.icons8.com/metro/20/339AF0/user-male-circle.png'/> {name}", unsafe_allow_html=True)
 
         with col2:
             st.markdown(f"<h3 style='color: white; background-color: #dc3545; padding: 10px;'>Red Team</h3>", unsafe_allow_html=True)
+            st.write(len(team2)," players")
             st.metric(label="Team Points", value=team2_total_points, delta=team2_total_points-team1_total_points)
             for name in team2.iloc[:, 0]:
-                st.markdown(f"<img src='https://img.icons8.com/emoji/24/000000/man-playing-handball--v1.png'/> {name}", unsafe_allow_html=True)
-
-
-        st.write("Summary:")
-        st.write("Team 1 Total Points: ",sum(team1['TotalPoints']))
-        st.write("Team 2 Total Points: ",sum(team2['TotalPoints']))
-
-        for skill in ['Speed' ,'Skill' ,'Passing' ,'Physical' ,'Shooting']:
-        
-            st.write(f"Team 1 Total {skill} Points: ",sum(team1[skill]))
-            st.write(f"Team 2 Total {skill} Points: ",sum(team2[skill]))
-
-        st.write(team1)
-        st.write(team2)
+                st.markdown(f"<img src='https://img.icons8.com/metro/20/FA5252/user-male-circle.png'/> {name}", unsafe_allow_html=True)
 
     
+        team1["team"] = "blue"
+        team2["team"] = "red"
+        teams=pd.concat([team1 ,team2])
+
+
+        # Remove the TotalPoints column
+        teams = teams.drop(columns=["TotalPoints"])
+
+
+
+        # Group the data by team and attribute
+        teams_grouped = teams.groupby(['team']).sum()
+
+        # Melt the data to long format
+        teams_melted = teams_grouped.reset_index().melt(id_vars=['team'])
+
+        # Create the chart
+        st.markdown("""---""")
+        chart = alt.Chart(teams_melted).mark_bar().encode(
+            y=alt.Y('team:N', axis=alt.Axis(title=None)),
+            x=alt.X('value:Q', axis=None),
+            color=alt.Color('team:N', legend=None, scale=alt.Scale(domain=['red', 'blue'], range=['#FF9999', '#99CCFF'])),
+            row=alt.Row('variable:N', title='')
+        ).properties(
+            width=400,
+            height=100
+        )
+
+
+        # Show the chart in Streamlit
+        st.altair_chart(chart, use_container_width=True)
+        
 
 
 
 
 
-    # --------------- GENERATE TEAMS -------------------------
-
-
-
-    #st.write(f"Teams:")
-
-    # Randomly assign each row to either the blue team or the red team
-    # pdfiltered["team"] = np.random.choice(["blue", "red"], size=len(pdfiltered))
-
-    # Split pdfiltered into two DataFrames for each team
- #   blue_team = pdfiltered[pdfiltered["team"] == "blue"]
- #   red_team = pdfiltered[pdfiltered["team"] == "red"]
-
- #   st.write(f"Teams:")
 
