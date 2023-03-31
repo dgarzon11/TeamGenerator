@@ -5,7 +5,7 @@ import random
 from deap import base, creator, tools
 import altair as alt
 
-# Titles
+# =====  SET UP  =====
 st.set_page_config(
     page_title="Teams Generator App",
     initial_sidebar_state="collapsed",
@@ -15,7 +15,7 @@ st.title("Teams Generator App")
 
 
 
-# Use sidebar to add instructions and improve layout
+# =====  SIDEBAR  =====
 with st.sidebar:
     st.markdown("# About")
     st.markdown("Welcome to the teams generator app")
@@ -24,43 +24,57 @@ with st.sidebar:
     st.write("The algorithm works by creating a population of candidate solutions, then evaluating their fitness. The fitter solutions are more likely to be selected for reproduction. The reproduction process creates offspring by combining the genetic material of multiple parent solutions. The offspring are then mutated to introduce new genetic material into the population. The process is repeated until a satisfactory solution is found.")    
         
 
-# Read in data from the Google Sheet.
-# Uses st.cache_data to only rerun when the query changes or after 10 min.
-@st.cache_data(ttl=600)
-def load_data(sheets_url):
-    csv_url = sheets_url.replace("/edit#gid=0", "/export?format=csv")
-    return pd.read_csv(csv_url)
 
-df = load_data(st.secrets["public_gsheets_url"])
+# =====  SELECT PLAYERS  =====
+def select_view():
+    st.write("select_view")
 
-# Print results.
-#for row in df.itertuples():
-#   st.write(f"{row.name} has a :{row.pet}:")
-if st.checkbox('Show players data'):
-    st.subheader('List of players')
-    st.write(df)
+    # Read in data from the Google Sheet.
+    # Uses st.cache_data to only rerun when the query changes or after 10 min.
+    @st.cache_data(ttl=600)
+    def load_data(sheets_url):
+        csv_url = sheets_url.replace("/edit#gid=0", "/export?format=csv")
+        return pd.read_csv(csv_url)
 
-# Get the values from the first column of the DataFrame
-options = df.iloc[:, 0].unique()
+    df = load_data(st.secrets["public_gsheets_url"])
 
-# Create a multiselect widget and get the selected values, default is all players
-st.subheader('Select today\'s players')
-selected_values = st.multiselect("Players", options, options, label_visibility="collapsed")
+    # Print results.
+    #for row in df.itertuples():
+    #   st.write(f"{row.name} has a :{row.pet}:")
+    if st.checkbox('Show players data'):
+        st.subheader('List of players')
+        st.write(df)
 
-# Show number of players selected
-st.write("Number of players selected:", len(selected_values))
+    # Get the values from the first column of the DataFrame
+    options = df.iloc[:, 0].unique()
 
-# Show table of players selected 
-#if len(pdfiltered)>0:
-#    st.subheader('Payers Selected')
-#    st.write(pdfiltered)
+    # Create a multiselect widget and get the selected values, default is all players
+    st.subheader('Select today\'s players')
+    selected_values = st.multiselect("Players", options, options, label_visibility="collapsed")
 
-# Add a submit button generate teams
-if st.button("Generate Teams"):
-    
-    st.markdown("""---""")
+    # Show number of players selected
+    st.write("Number of players selected:", len(selected_values))
+
+    # Create a new DataFrame containing only rows where the value in the first column is in selected_values
+    pdfiltered = df[df.iloc[:, 0].isin(selected_values)]
+
+
+    if st.button("Go to teams_view"):
+        #players_selected = pdfiltered.copy()
+        st.session_state.pdfiltered = pdfiltered
+        st.session_state.view = "teams_view"
+        st.experimental_rerun()
+
+
+        
+
+
+
+# =====  SHOW TEAMS  =====
+def teams_view(players_selected):
+    st.write("teams_view")
+
     # --------------- GENERATE TEAMS -------------------------
-
     # Generate two equal teams based on the total points. 
     # Both Teams will have the same number of players or the difference will be 1 player.
     # Both teams will have the same total points or the difference will be the minimum possible
@@ -71,19 +85,16 @@ if st.button("Generate Teams"):
     # A summary of total points by team and by skill is shown at the end of the code.
     # This is a streamlit app.
 
-    # Create a new DataFrame containing only rows where the value in the first column is in selected_values
-    pdfiltered = df[df.iloc[:, 0].isin(selected_values)]
 
-  
     with st.spinner('Generating teams...'):
         #calculate total points by player
-        pdfiltered['TotalPoints'] = pdfiltered.iloc[:, 1:6].sum(axis=1)
+        players_selected['TotalPoints'] = players_selected.iloc[:, 1:6].sum(axis=1)
 
         # Define the fitness function
         def evaluate(individual):
             # Split the players into two teams based on the individual's binary representation
-            team1 = pdfiltered.iloc[[i for i in range(len(individual)) if individual[i] == 0]]
-            team2 = pdfiltered.iloc[[i for i in range(len(individual)) if individual[i] == 1]]
+            team1 = players_selected.iloc[[i for i in range(len(individual)) if individual[i] == 0]]
+            team2 = players_selected.iloc[[i for i in range(len(individual)) if individual[i] == 1]]
 
             # Calculate the difference in total points between the two teams
             diff_total_points = abs(sum(team1['TotalPoints']) - sum(team2['TotalPoints']))
@@ -101,7 +112,7 @@ if st.button("Generate Teams"):
         toolbox = base.Toolbox()
         toolbox.register('attr_bool', random.randint, 0, 1)
         toolbox.register('individual', tools.initRepeat, creator.Individual,
-                        toolbox.attr_bool, n=len(pdfiltered))
+                        toolbox.attr_bool, n=len(players_selected))
         toolbox.register('population', tools.initRepeat, list,
                         toolbox.individual)
         toolbox.register('evaluate', evaluate)
@@ -174,7 +185,7 @@ if st.button("Generate Teams"):
             
             
             for i,val in enumerate(bi):
-                player_row=pd.Series(pdfiltered.iloc[i])
+                player_row=pd.Series(players_selected.iloc[i])
                 if val==0:
                     team1=team1.append(player_row ,ignore_index=True)
                 else:
@@ -235,6 +246,36 @@ if st.button("Generate Teams"):
 
         # Show the chart in Streamlit
         st.altair_chart(chart, use_container_width=True)
+
+
+
+    if st.button("Go back to select_view"):
+        st.session_state.view = "select_view"
+        st.experimental_rerun()
+
+
+        
+
+
+
+
+# =====  MAIN APP  =====
+def app():
+
+    if "view" not in st.session_state:
+        st.session_state.view = "select_view"
+
+    if "players_selected" not in st.session_state:
+        st.session_state.players_selected = []
+
+    if st.session_state.view == "select_view":
+        select_view()
+    elif st.session_state.view == "teams_view":
+        players_selected = st.session_state.pdfiltered
+        teams_view(players_selected)
+
+if __name__ == "__main__":
+    app() 
         
 
 
