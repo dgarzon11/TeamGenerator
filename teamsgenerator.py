@@ -5,7 +5,7 @@ import random
 from deap import base, creator, tools
 import altair as alt
 
-# Titles
+# =====  SET UP  =====
 st.set_page_config(
     page_title="Teams Generator App",
     initial_sidebar_state="collapsed",
@@ -15,7 +15,7 @@ st.title("Teams Generator App")
 
 
 
-# Use sidebar to add instructions and improve layout
+# =====  SIDEBAR  =====
 with st.sidebar:
     st.markdown("# About")
     st.markdown("Welcome to the teams generator app")
@@ -23,6 +23,34 @@ with st.sidebar:
     st.write("The genetic algorithm is a search heuristic that is inspired by Charles Darwin's theory of natural selection. It is commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection.")
     st.write("The algorithm works by creating a population of candidate solutions, then evaluating their fitness. The fitter solutions are more likely to be selected for reproduction. The reproduction process creates offspring by combining the genetic material of multiple parent solutions. The offspring are then mutated to introduce new genetic material into the population. The process is repeated until a satisfactory solution is found.")    
         
+
+
+# =====  SELECT PLAYERS  =====
+def select_players():
+    st.write("View 1")
+    if st.button("Go to View 2"):
+        st.session_state.view = "view2"
+        st.experimental_rerun()
+
+# Second view
+def view2():
+    st.write("View 2")
+    if st.button("Go to Select Players"):
+        st.session_state.view = "select_players"
+        st.experimental_rerun()
+
+# Main app
+def app():
+    if "view" not in st.session_state:
+        st.session_state.view = "select_players"
+
+    if st.session_state.view == "select_players":
+        select_players()
+    elif st.session_state.view == "view2":
+        view2()
+
+if __name__ == "__main__":
+    app()        
 
 # Read in data from the Google Sheet.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.

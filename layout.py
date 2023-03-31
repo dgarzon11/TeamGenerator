@@ -1,3 +1,5 @@
+import streamlit as st
+
 # First view
 def view1():
     st.write("View 1")
