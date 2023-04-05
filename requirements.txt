@@ -1,100 +1,105 @@
-altair @ file:///tmp/build/80754af9/altair_1599835197802/work
-appnope @ file:///Users/ec2-user/ci_py311/appnope_1678317440516/work
-asttokens @ file:///opt/conda/conda-bld/asttokens_1646925590279/work
-attrs @ file:///Users/ec2-user/ci_py311/attrs_1678315289647/work
-backcall @ file:///home/ktietz/src/ci/backcall_1611930011877/work
+altair==4.1.0
+appnope==0.1.2
+asttokens==2.0.5
+attrs==22.1.0
+backcall==0.2.0
 blinker==1.4
-Bottleneck @ file:///Users/ec2-user/ci_py311/bottleneck_1678322312632/work
+Bottleneck==1.3.5
 brotlipy==0.7.0
-cachetools @ file:///tmp/build/80754af9/cachetools_1619597386817/work
-certifi @ file:///Users/ec2-user/ci_py311/certifi_1678321191472/work/certifi
-cffi @ file:///Users/ec2-user/ci_py311/cffi_1678315312775/work
-charset-normalizer @ file:///tmp/build/80754af9/charset-normalizer_1630003229654/work
-click @ file:///Users/ec2-user/ci_py311/click_1678318124837/work
-comm @ file:///Users/ec2-user/ci_py311/comm_1678317779525/work
-commonmark @ file:///Users/ktietz/demo/mc3/conda-bld/commonmark_1630649545323/work
-cryptography @ file:///Users/ec2-user/ci_py311_2/cryptography_1679335457662/work
+cachetools==4.2.2
+certifi==2022.12.7
+cffi==1.15.1
+charset-normalizer==2.0.4
+click==8.0.4
+comm==0.1.2
+commonmark==0.9.1
+cryptography==39.0.1
 deap==1.3.3
-debugpy @ file:///Users/ec2-user/ci_py311/debugpy_1678317801115/work
-decorator @ file:///opt/conda/conda-bld/decorator_1643638310831/work
-entrypoints @ file:///Users/ec2-user/ci_py311/entrypoints_1678316169365/work
-executing @ file:///opt/conda/conda-bld/executing_1646925071911/work
-flit_core @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_9elg0qmmha/croot/flit-core_1679397106218/work/source/flit_core
-future @ file:///Users/ec2-user/ci_py311_2/future_1679335881731/work
-gitdb @ file:///tmp/build/80754af9/gitdb_1617117951232/work
-GitPython @ file:///Users/ec2-user/ci_py311/gitpython_1678391880877/work
+debugpy==1.5.1
+decorator==5.1.1
+docopt==0.6.2
+entrypoints==0.4
+executing==0.8.3
+flit_core==3.8.0
+future==0.18.3
+gitdb==4.0.7
+GitPython==3.1.30
 google-auth==2.16.2
 google-auth-oauthlib==1.0.0
 gsheetsdb==0.1.13.1
 gspread==5.7.2
-idna @ file:///Users/ec2-user/ci_py311/idna_1678315819133/work
-importlib-metadata @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_81_20mq0d8/croot/importlib-metadata_1678997090664/work
+idna==3.4
+importlib-metadata==6.0.0
 install==1.3.5
-ipykernel @ file:///Users/ec2-user/ci_py311/ipykernel_1678318220696/work
-ipython @ file:///Users/ec2-user/ci_py311/ipython_1678317876128/work
-ipywidgets @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_f5atknkudc/croot/ipywidgets_1679394812720/work
-jedi @ file:///Users/ec2-user/ci_py311_2/jedi_1679336327335/work
-Jinja2 @ file:///Users/ec2-user/ci_py311/jinja2_1678317138271/work
-jsonschema @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_f9p98o1kqf/croot/jsonschema_1678983430226/work
-jupyter_client @ file:///Users/ec2-user/ci_py311/jupyter_client_1678316948346/work
-jupyter_core @ file:///Users/ec2-user/ci_py311/jupyter_core_1678316236172/work
-jupyterlab-widgets @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_9btffb27id/croot/jupyterlab_widgets_1679055288818/work
-MarkupSafe @ file:///Users/ec2-user/ci_py311/markupsafe_1678316973889/work
-matplotlib-inline @ file:///Users/ec2-user/ci_py311/matplotlib-inline_1678317544666/work
+ipykernel==6.19.2
+ipython==8.10.0
+ipywidgets==8.0.4
+jedi==0.18.1
+Jinja2==3.1.2
+jsonschema==4.17.3
+jupyter_client==7.4.9
+jupyter_core==5.2.0
+jupyterlab-widgets==3.0.5
+MarkupSafe==2.1.1
+matplotlib-inline==0.1.6
 mo-dots==4.22.21108
 mo-future==3.147.20327
 mo-imports==3.149.20327
 mo-kwargs==4.22.21108
 mo-logs==4.23.21108
 moz-sql-parser==4.40.21126
-nest-asyncio @ file:///Users/ec2-user/ci_py311/nest-asyncio_1678316288195/work
-numexpr @ file:///Users/ec2-user/ci_py311_2/numexpr_1679336584935/work
-numpy @ file:///Users/ec2-user/ci_py311/numpy_and_numpy_base_1678321341477/work
+nest-asyncio==1.5.6
+numexpr==2.8.4
+numpy==1.23.5
 oauthlib==3.2.2
-packaging @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_c3zlhpboab/croot/packaging_1678965318579/work
+packaging==23.0
 pandas==1.5.3
-parso @ file:///opt/conda/conda-bld/parso_1641458642106/work
-pexpect @ file:///tmp/build/80754af9/pexpect_1605563209008/work
-pickleshare @ file:///tmp/build/80754af9/pickleshare_1606932040724/work
+parso==0.8.3
+pexpect==4.8.0
+pickleshare==0.7.5
 Pillow==9.4.0
-platformdirs @ file:///Users/ec2-user/ci_py311/platformdirs_1678315988118/work
-prompt-toolkit @ file:///Users/ec2-user/ci_py311/prompt-toolkit_1678317707969/work
+pip==23.0.1
+pipreqs==0.4.11
+platformdirs==2.5.2
+prompt-toolkit==3.0.36
 protobuf==3.20.3
-psutil @ file:///Users/ec2-user/ci_py311_2/psutil_1679337242143/work
-ptyprocess @ file:///tmp/build/80754af9/ptyprocess_1609355006118/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl
-pure-eval @ file:///opt/conda/conda-bld/pure_eval_1646925070566/work
+psutil==5.9.0
+ptyprocess==0.7.0
+pure-eval==0.2.2
 pyarrow==8.0.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
-pydeck @ file:///Users/ec2-user/ci_py311/pydeck_1678393553841/work
-Pygments @ file:///opt/conda/conda-bld/pygments_1644249106324/work
-Pympler @ file:///tmp/build/80754af9/pympler_1602785470644/work
-pyOpenSSL @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_19gfn1ib_u/croot/pyopenssl_1678965300171/work
-pyrsistent @ file:///Users/ec2-user/ci_py311/pyrsistent_1678316053523/work
-PySocks @ file:///Users/ec2-user/ci_py311/pysocks_1678315868424/work
-python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
-pytz @ file:///Users/ec2-user/ci_py311/pytz_1678318034461/work
-pyzmq @ file:///Users/ec2-user/ci_py311/pyzmq_1678316754714/work
-requests @ file:///Users/ec2-user/ci_py311_2/requests_1679337454610/work
+pycparser==2.21
+pydeck==0.7.1
+Pygments==2.11.2
+Pympler==0.9
+pyOpenSSL==23.0.0
+pyrsistent==0.18.0
+PySocks==1.7.1
+python-dateutil==2.8.2
+pytz==2022.7
+pyzmq==23.2.0
+requests==2.28.1
 requests-oauthlib==1.3.1
-rich @ file:///Users/ec2-user/ci_py311/rich_1678323690459/work
+rich==12.5.1
 rsa==4.9
-semver @ file:///tmp/build/80754af9/semver_1603822362442/work
-six @ file:///tmp/build/80754af9/six_1644875935023/work
-smmap @ file:///tmp/build/80754af9/smmap_1611694433573/work
-stack-data @ file:///opt/conda/conda-bld/stack_data_1646927590127/work
+semver==2.13.0
+setuptools==65.6.3
+six==1.16.0
+smmap==4.0.0
+stack-data==0.2.0
 streamlit==1.20.0
-toml @ file:///tmp/build/80754af9/toml_1616166611790/work
-toolz @ file:///Users/ec2-user/ci_py311/toolz_1678323009669/work
-tornado @ file:///Users/ec2-user/ci_py311/tornado_1678316833426/work
-traitlets @ file:///Users/ec2-user/ci_py311/traitlets_1678316097905/work
-typing_extensions @ file:///Users/ec2-user/ci_py311/typing_extensions_1678315181682/work
-tzlocal @ file:///Users/ec2-user/ci_py311/tzlocal_1678379414116/work
-urllib3 @ file:///Users/ec2-user/ci_py311_2/urllib3_1679338443807/work
-validators @ file:///tmp/build/80754af9/validators_1612286467315/work
+toml==0.10.2
+toolz==0.12.0
+tornado==6.2
+traitlets==5.7.1
+typing_extensions==4.4.0
+tzlocal==2.1
+urllib3==1.26.14
+validators==0.18.2
 watchdog==3.0.0
-wcwidth @ file:///Users/ktietz/demo/mc3/conda-bld/wcwidth_1629357192024/work
-widgetsnbextension @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_8feupjw2ld/croot/widgetsnbextension_1679313870305/work
-zipp @ file:///Users/ec2-user/ci_py311/zipp_1678318061389/work
-
+wcwidth==0.2.5
+wheel==0.38.4
+widgetsnbextension==4.0.5
+yarg==0.1.9
+zipp==3.11.0
