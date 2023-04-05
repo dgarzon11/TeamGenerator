@@ -7,11 +7,12 @@ import altair as alt
 
 # =====  SET UP  =====
 st.set_page_config(
-    page_title="Teams Generator App",
+    page_title="Squadmateo",
     initial_sidebar_state="collapsed",
     page_icon="⚽"
     )
-st.title("Teams Generator App")
+st.title("Squadmateo")
+st.text("A teams generator app")
 
 
 
@@ -19,34 +20,34 @@ st.title("Teams Generator App")
 with st.sidebar:
     st.markdown("# About")
     st.markdown("Welcome to the teams generator app")
-    st.markdown("Created for \"Los lunes al futsal\"")
-    st.write("The genetic algorithm is a search heuristic that is inspired by Charles Darwin's theory of natural selection. It is commonly used to generate high-quality solutions to optimization and search problems by relying on bio-inspired operators such as mutation, crossover and selection.")
-    st.write("The algorithm works by creating a population of candidate solutions, then evaluating their fitness. The fitter solutions are more likely to be selected for reproduction. The reproduction process creates offspring by combining the genetic material of multiple parent solutions. The offspring are then mutated to introduce new genetic material into the population. The process is repeated until a satisfactory solution is found.")    
-        
+    st.write("This app uses a genetic algorithm that generates two teams of players. The goal of the algorithm is to create two teams that are balanced in terms of skill level and total points scored.")
+    st.write("The algorithm creates a population of potential solutions (teams) and then repeatedly selects parents, creates offspring through crossover and mutation, and evaluates the fitness of the offspring. The algorithm then selects the best solutions (teams) to keep and continues the process for a set number of generations.")    
+    st.markdown("Created by Diego Garzon")
+    
+# Read in data from the Google Sheet.
+# Uses st.cache_data to only rerun when the query changes or after 10 min.
+@st.cache_data(ttl=600)
+def load_data(sheets_url):
+    csv_url = sheets_url.replace("/edit#gid=0", "/export?format=csv")
+    return pd.read_csv(csv_url)
 
+df = load_data(st.secrets["public_gsheets_url"])
 
 # =====  SELECT PLAYERS  =====
 def select_view():
-    st.write("select_view")
-
-    # Read in data from the Google Sheet.
-    # Uses st.cache_data to only rerun when the query changes or after 10 min.
-    @st.cache_data(ttl=600)
-    def load_data(sheets_url):
-        csv_url = sheets_url.replace("/edit#gid=0", "/export?format=csv")
-        return pd.read_csv(csv_url)
-
-    df = load_data(st.secrets["public_gsheets_url"])
 
     # Print results.
     #for row in df.itertuples():
     #   st.write(f"{row.name} has a :{row.pet}:")
-    if st.checkbox('Show players data'):
-        st.subheader('List of players')
-        st.write(df)
+    #if st.checkbox('Show players data'):
+    #    st.subheader('List of players')
+    #    st.write(df)
 
     # Get the values from the first column of the DataFrame
     options = df.iloc[:, 0].unique()
+    
+    # Sort the values stored in options
+    options = np.sort(options)
 
     # Create a multiselect widget and get the selected values, default is all players
     st.subheader('Select today\'s players')
@@ -58,21 +59,19 @@ def select_view():
     # Create a new DataFrame containing only rows where the value in the first column is in selected_values
     pdfiltered = df[df.iloc[:, 0].isin(selected_values)]
 
-
-    if st.button("Go to teams_view"):
+    
+    if st.button("GENERATE"):
         #players_selected = pdfiltered.copy()
         st.session_state.pdfiltered = pdfiltered
         st.session_state.view = "teams_view"
         st.experimental_rerun()
 
 
-        
-
-
 
 # =====  SHOW TEAMS  =====
 def teams_view(players_selected):
-    st.write("teams_view")
+    #st.write("teams_view")
+    
 
     # --------------- GENERATE TEAMS -------------------------
     # Generate two equal teams based on the total points. 
@@ -86,7 +85,7 @@ def teams_view(players_selected):
     # This is a streamlit app.
 
 
-    with st.spinner('Generating teams...'):
+    with st.spinner('Loading...'):
         #calculate total points by player
         players_selected['TotalPoints'] = players_selected.iloc[:, 1:6].sum(axis=1)
 
@@ -143,12 +142,10 @@ def teams_view(players_selected):
             
             # Clone selected individuals 
             offspring=list(map(toolbox.clone ,offspring))
-
             
             # Apply crossover and mutation to offspring
             
             # Crossover
-            
             for child1 ,child2 in zip(offspring[::2],offspring[1::2]):
                 if random.random()<cx_prob:
                     toolbox.mate(child1 ,child2)
@@ -157,7 +154,6 @@ def teams_view(players_selected):
                     
                     
             # Mutation
-            
             for mutant in offspring:
                 if random.random()<mut_prob:
                     toolbox.mutate(mutant)
@@ -165,7 +161,6 @@ def teams_view(players_selected):
                     
                     
             # Evaluate new individuals
-            
             invalid_ind=[ind for ind in offspring if not ind.fitness.valid]
             fitnesses=map(toolbox.evaluate ,invalid_ind)
             for ind ,fit in zip(invalid_ind ,fitnesses):
@@ -173,7 +168,6 @@ def teams_view(players_selected):
             
             
             # Replace population with new offspring
-            
             pop[:]=offspring
 
         best_individuals=tools.selBest(pop,k=3)
@@ -193,24 +187,59 @@ def teams_view(players_selected):
 
 
         # Create two columns to display the teams side-by-side
-        team1_total_points=sum(team1['TotalPoints'])
-        team2_total_points=sum(team2['TotalPoints'])
+        team1_total_points=int(sum(team1['TotalPoints']))
+        team2_total_points=int(sum(team2['TotalPoints']))
 
+
+        # --------------- VIEW TEAMS -------------------------
+
+        # Buttons to re-generate teams & go back to select players
+        colb1, colb2, colb3 = st.columns([14,2,3])
+
+        with colb1:
+            st.write("")
+        with colb2:
+            if st.button("BACK"):
+                st.session_state.view = "select_view"
+                st.experimental_rerun()
+        with colb3:    
+            if st.button("GENERATE"):
+                st.session_state.view = "teams_view"
+                st.experimental_rerun()
 
 
         col1, col2 = st.columns(2)
+        metrics_labels = ['Speed', 'Skill', 'Passing', 'Physical', 'Shooting']
 
         with col1:
+            st.metric(label="Total", value=team1_total_points, delta=team1_total_points-team2_total_points)
             st.markdown(f"<h3 style='color: white; background-color: #007bff; padding: 10px;'>Blue Team</h3>", unsafe_allow_html=True)
+
+            metrics_values = [int(sum(team1[label])) for label in metrics_labels]
+            metrics_deltas = [int(sum(team1[label])) - int(sum(team2[label])) for label in metrics_labels]
+
+            colbl1, colbl2, colbl3, colbl4, colbl5 = st.columns(5)
+            for i in range(5):
+                with locals()[f"colbl{i+1}"]:
+                    st.metric(label=metrics_labels[i], value=metrics_values[i], delta=metrics_deltas[i])
+
             st.write(len(team1)," players")
-            st.metric(label="Team Points", value=team1_total_points, delta=team1_total_points-team2_total_points)
             for name in team1.iloc[:, 0]:
                 st.markdown(f"<img src='https://img.icons8.com/metro/20/339AF0/user-male-circle.png'/> {name}", unsafe_allow_html=True)
 
         with col2:
+            st.metric(label="Total", value=team2_total_points, delta=team2_total_points-team1_total_points)
             st.markdown(f"<h3 style='color: white; background-color: #dc3545; padding: 10px;'>Red Team</h3>", unsafe_allow_html=True)
+            
+            metrics_values = [int(sum(team2[label])) for label in metrics_labels]
+            metrics_deltas = [int(sum(team2[label])) - int(sum(team1[label])) for label in metrics_labels]
+
+            colr1, colr2, colr3, colr4, colr5 = st.columns(5)
+            for i in range(5):
+                with locals()[f"colr{i+1}"]:
+                    st.metric(label=metrics_labels[i], value=metrics_values[i], delta=metrics_deltas[i])
+
             st.write(len(team2)," players")
-            st.metric(label="Team Points", value=team2_total_points, delta=team2_total_points-team1_total_points)
             for name in team2.iloc[:, 0]:
                 st.markdown(f"<img src='https://img.icons8.com/metro/20/FA5252/user-male-circle.png'/> {name}", unsafe_allow_html=True)
 
@@ -223,40 +252,15 @@ def teams_view(players_selected):
         # Remove the TotalPoints column
         teams = teams.drop(columns=["TotalPoints"])
 
-
-
         # Group the data by team and attribute
         teams_grouped = teams.groupby(['team']).sum()
-
-        # Melt the data to long format
-        teams_melted = teams_grouped.reset_index().melt(id_vars=['team'])
-
-        # Create the chart
-        st.markdown("""---""")
-        chart = alt.Chart(teams_melted).mark_bar().encode(
-            y=alt.Y('team:N', axis=alt.Axis(title=None)),
-            x=alt.X('value:Q', axis=None),
-            color=alt.Color('team:N', legend=None, scale=alt.Scale(domain=['red', 'blue'], range=['#FF9999', '#99CCFF'])),
-            row=alt.Row('variable:N', title='')
-        ).properties(
-            width=400,
-            height=100
-        )
-
-
-        # Show the chart in Streamlit
-        st.altair_chart(chart, use_container_width=True)
-
-
-
-    if st.button("Go back to select_view"):
-        st.session_state.view = "select_view"
-        st.experimental_rerun()
-
-
         
+        # Remove second column from teams_grouped
+        teams_grouped = teams_grouped.drop(columns=["Name"])
+        print(teams_grouped)
 
-
+        # Pivot data
+        teams_pivoted = teams_grouped.reset_index().melt(id_vars=['team'])
 
 
 # =====  MAIN APP  =====
@@ -276,8 +280,6 @@ def app():
 
 if __name__ == "__main__":
     app() 
-        
-
 
 
 
