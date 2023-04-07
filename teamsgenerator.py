@@ -4,6 +4,9 @@ import numpy as np
 import random
 from deap import base, creator, tools
 import altair as alt
+from PIL import Image
+
+## -- To generate requirements.txt:  pip list --format=freeze > requirements.txt
 
 # =====  SET UP  =====
 st.set_page_config(
@@ -11,9 +14,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
     page_icon="⚽"
     )
-st.title("Squadmateo")
-st.text("A teams generator app")
 
+image = Image.open('logo.png')
+
+st.image(image, use_column_width=True)
 
 
 # =====  SIDEBAR  =====
@@ -212,9 +216,9 @@ def teams_view(players_selected):
         metrics_labels = ['Speed', 'Skill', 'Passing', 'Physical', 'Shooting']
 
         with col1:
-            st.metric(label="Total", value=team1_total_points, delta=team1_total_points-team2_total_points)
-            st.markdown(f"<h3 style='color: white; background-color: #007bff; padding: 10px;'>Blue Team</h3>", unsafe_allow_html=True)
-
+            st.markdown(f"<h3 style='color: white; background-color: #2c5fac; padding: 10px;'>Blue Team | {team1_total_points}</h3>", unsafe_allow_html=True)
+            #st.metric(label="Total", value=team1_total_points, delta=team1_total_points-team2_total_points)
+            
             metrics_values = [int(sum(team1[label])) for label in metrics_labels]
             metrics_deltas = [int(sum(team1[label])) - int(sum(team2[label])) for label in metrics_labels]
 
@@ -225,12 +229,12 @@ def teams_view(players_selected):
 
             st.write(len(team1)," players")
             for name in team1.iloc[:, 0]:
-                st.markdown(f"<img src='https://img.icons8.com/metro/20/339AF0/user-male-circle.png'/> {name}", unsafe_allow_html=True)
+                st.markdown(f"<img src='https://img.icons8.com/metro/20/2c5fac/user-male-circle.png'/> {name}", unsafe_allow_html=True)
 
         with col2:
-            st.metric(label="Total", value=team2_total_points, delta=team2_total_points-team1_total_points)
-            st.markdown(f"<h3 style='color: white; background-color: #dc3545; padding: 10px;'>Red Team</h3>", unsafe_allow_html=True)
-            
+            st.markdown(f"<h3 style='color: white; background-color: #b80c09; padding: 10px;'>Red Team | {team2_total_points}</h3>", unsafe_allow_html=True)
+            #st.metric(label="Total", value=team2_total_points, delta=team2_total_points-team1_total_points)
+           
             metrics_values = [int(sum(team2[label])) for label in metrics_labels]
             metrics_deltas = [int(sum(team2[label])) - int(sum(team1[label])) for label in metrics_labels]
 
@@ -241,7 +245,7 @@ def teams_view(players_selected):
 
             st.write(len(team2)," players")
             for name in team2.iloc[:, 0]:
-                st.markdown(f"<img src='https://img.icons8.com/metro/20/FA5252/user-male-circle.png'/> {name}", unsafe_allow_html=True)
+                st.markdown(f"<img src='https://img.icons8.com/metro/20/b80c09/user-male-circle.png'/> {name}", unsafe_allow_html=True)
 
     
         team1["team"] = "blue"
@@ -280,8 +284,3 @@ def app():
 
 if __name__ == "__main__":
     app() 
-
-
-
-
-
