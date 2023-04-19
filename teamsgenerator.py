@@ -12,7 +12,6 @@ from PIL import Image
 st.set_page_config(
     page_title="Squadmateo",
     initial_sidebar_state="collapsed",
-    page_icon="⚽"
     )
 
 image = Image.open('logo.png')
@@ -254,17 +253,14 @@ def teams_view(players_selected):
 
 
         # Remove the TotalPoints column
-        teams = teams.drop(columns=["TotalPoints"])
+        #teams = teams.drop(columns=["TotalPoints"])
 
         # Group the data by team and attribute
-        teams_grouped = teams.groupby(['team']).sum()
+        #teams_grouped = teams.groupby(['team']).sum()
         
         # Remove second column from teams_grouped
-        teams_grouped = teams_grouped.drop(columns=["Name"])
-        print(teams_grouped)
+        #teams_grouped = teams_grouped.drop(columns=["Name"])
 
-        # Pivot data
-        teams_pivoted = teams_grouped.reset_index().melt(id_vars=['team'])
 
 
 # =====  MAIN APP  =====
