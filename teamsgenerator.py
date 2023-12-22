@@ -11,8 +11,7 @@ from PIL import Image
 # =====  SET UP  =====
 st.set_page_config(
     page_title="Squadmateo",
-    initial_sidebar_state="collapsed",
-    theme='light'
+    initial_sidebar_state="collapsed"
     )
 
 image = Image.open('logo.png')
